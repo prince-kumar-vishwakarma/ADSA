@@ -17,19 +17,15 @@ int getMax(int a[], int n)
 
 void countingSort(int a[], int n)
 {
+    if (n <= 0)
+        return;
+
     int max = getMax(a, n);
 
-    int count[max + 1];
-
-    for (int i = 0; i <= max; i++)
-    {
-        count[i] = 0;
-    }
+    int count[max+1];
 
     for (int i = 0; i < n; i++)
-    {
         count[a[i]]++;
-    }
 
     int k = 0;
 
@@ -37,11 +33,12 @@ void countingSort(int a[], int n)
     {
         while (count[i] > 0)
         {
-            a[k] = i;
-            k++;
+            a[k++] = i;
             count[i]--;
         }
     }
+
+    free(count);
 }
 
 int main()

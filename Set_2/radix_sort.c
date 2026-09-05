@@ -15,44 +15,38 @@ int getMax(int a[], int n)
     return max;
 }
 
-void countingSort(int a[], int n, int place)
+void countingSortByDigit(int a[], int n, int exp)
 {
     int output[100];
     int count[10] = {0};
 
     for (int i = 0; i < n; i++)
-    {
-        int digit = (a[i] / place) % 10;
-        count[digit]++;
-    }
+        count[(a[i] / exp) % 10]++;
 
     for (int i = 1; i < 10; i++)
-    {
-        count[i] = count[i] + count[i - 1];
-    }
+        count[i] += count[i - 1];
 
     for (int i = n - 1; i >= 0; i--)
     {
-        int digit = (a[i] / place) % 10;
-
+        int digit = (a[i] / exp) % 10;
         output[count[digit] - 1] = a[i];
         count[digit]--;
     }
 
     for (int i = 0; i < n; i++)
-    {
         a[i] = output[i];
-    }
+
 }
 
 void radixSort(int a[], int n)
 {
+    if (n <= 0)
+        return;
+
     int max = getMax(a, n);
 
-    for (int place = 1; max / place > 0; place *= 10)
-    {
-        countingSort(a, n, place);
-    }
+    for (int exp = 1; max / exp > 0; exp *= 10)
+        countingSortByDigit(a, n, exp);
 }
 
 int main()
