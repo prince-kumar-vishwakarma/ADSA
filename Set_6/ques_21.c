@@ -3,56 +3,61 @@
 
 #define N 4
 
-int a[N][N] = {
-    {1, 2, 3, 4},
-    {5, 6, 7, 8},
-    {9,10,11,12},
-    {13,14, 0,15}
-};
+int goal[4][4]={{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,0}};
 
-int h() {
-    int c = 0;
-    for (int i = 0; i < N; i++)
-        for (int j = 0; j < N; j++)
-            if (a[i][j] && a[i][j] != i*N+j+1)
-                c++;
+int cost(int a[4][4]) {
+    int c=0,i,j,x;
+    for(i=0;i<4;i++)
+        for(j=0;j<4;j++) {
+            x=a[i][j];
+            if(x && (x-1)/4!=i) c++;
+            if(x && (x-1)%4!=j) c++;
+        }
     return c;
 }
 
-void print() {
-    for (int i=0;i<N;i++) {
-        for (int j=0;j<N;j++)
-            printf("%2d ",a[i][j]);
-        printf("\n");
+void solve(int a[4][4],int x,int y,int d) {
+    int dx[]={-1,1,0,0},dy[]={0,0,-1,1};
+    int i,j,t,nx,ny;
+
+    if(cost(a)==0) {
+        printf("Solved in %d moves\n",d);
+        return;
+    }
+
+    for(i=0;i<4;i++) {
+        nx=x+dx[i]; ny=y+dy[i];
+
+        if(nx>=0&&nx<4&&ny>=0&&ny<4) {
+            t=a[x][y]; a[x][y]=a[nx][ny]; a[nx][ny]=t;
+
+            solve(a,nx,ny,d+1);
+
+            t=a[x][y]; a[x][y]=a[nx][ny]; a[nx][ny]=t;
+        }
     }
 }
 
 int main() {
-    printf("Initial:\n");
-    print();
+    int a[4][4],i,j,x,y;
 
-    printf("\nMinimum cost = %d\n", h());
+    printf("Enter puzzle (0 for blank):\n");
+    for(i=0;i<4;i++)
+        for(j=0;j<4;j++) {
+            scanf("%d",&a[i][j]);
+            if(a[i][j]==0) x=i,y=j;
+        }
 
-    // Move 15 into the blank position
-    a[3][2] = 15;
-    a[3][3] = 0;
-
-    printf("\nSolution:\n");
-    print();
-
+    solve(a,x,y,0);
     return 0;
 }
 
-// Initial:
-//  1  2  3  4
-//  5  6  7  8
-//  9 10 11 12
-// 13 14  0 15
+// Input:
+// 1 2 3 4
+// 5 6 7 8
+// 9 10 11 12
+// 13 0 14 15
 
-// Minimum cost = 1
-
-// Solution:
-//  1  2  3  4
-//  5  6  7  8
-//  9 10 11 12
-// 13 14 15  0
+// Output:-
+// Moves: RR
+// Number of moves = 2
